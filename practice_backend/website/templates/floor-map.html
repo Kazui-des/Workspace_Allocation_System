@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floor Map - Workspace Allocation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/floor-map.css') }}">
+</head>
+<body>
+    <header class="header">
+        <h1>Floor Map</h1>
+        <button onclick="location.href='/'">← Dashboard</button>
+    </header>
+
+    <main class="floor-map-container">
+        <h2>Select a Floor</h2>
+        <select id="floorSelect" onchange="loadFloorRooms()">
+            <option value="1">Floor 1</option>
+            <option value="2">Floor 2</option>
+            <option value="3">Floor 3</option>
+        </select>
+
+        <div class="map-container">
+            <svg id="floorMap" viewBox="0 0 800 400">
+                <!-- Rooms will be dynamically added here -->
+            </svg>
+        </div>
+
+        <div id="roomDetails" class="room-details"></div>
+    </main>
+
+    <script>
+        async function loadFloorRooms() {
+            const floor = document.getElementById("floorSelect").value;
+            const response = await fetch(`/api/floor-rooms?floor=${floor}`);
+            const rooms = await response.json();
+
+            const svg = document.getElementById("floorMap");
+            svg.innerHTML = ''; // Clear previous map
+
+            rooms.forEach(room => {
+                let rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                rect.setAttribute("x", room.x);
+                rect.setAttribute("y", room.y);
+                rect.setAttribute("width", "100");
+                rect.setAttribute("height", "60");
+                rect.setAttribute("fill", room.reserved ? "red" : "green");
+                rect.setAttribute("stroke", "black");
+                rect.setAttribute("stroke-width", "2");
+                rect.setAttribute("cursor", "pointer");
+                rect.onclick = () => showRoomDetails(room);
+                svg.appendChild(rect);
+            });
+        }
+
+        function showRoomDetails(room) {
+            document.getElementById("roomDetails").innerHTML = `
+                <h3>${room.name}</h3>
+                <p>Location: ${room.location}</p>
+                <p>Capacity: ${room.capacity} people</p>
+                <p>Status: ${room.reserved ? "Reserved" : "Available"}</p>
+                <a href="/details?id=${room.id}" class="details-link">View Details</a>
+            `;
+        }
+
+        window.onload = loadFloorRooms;
+    </script>
+</body>
+</html>

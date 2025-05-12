@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Workspace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/addWorkspace.css') }}">
+</head>
+<body>
+  <main class="settings-content container">
+    <section>
+      <header class="header">
+        <h1>Add Workspace</h1>
+        <button ><a href="/"> Go Back</a></button>
+      </header>
+
+      <form action="/add-workspace" method="POST" class="settings-form">
+          <label for="name">Workspace Name:</label>
+          <input type="text" id="name" name="name" required>
+          
+          <label for="capacity">Capacity:</label>
+          <input type="number" id="capacity" name="capacity" required>
+          
+          <label for="amenities">Amenities:</label>
+          <textarea id="amenities" name="amenities" required></textarea>
+          
+          <button type="submit">Add Workspace</button>
+      </form>
+    </section>
+  </main>
+ 
+</body>
+</html>
